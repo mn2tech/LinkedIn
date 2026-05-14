@@ -750,11 +750,13 @@ const TYPE_COLOR = {
 const AI_TYPES = new Set(["AI"]);
 const isAI = (dc) => AI_TYPES.has(dc.type);
 
-// returns true if any DC in the city/state/country matches the filter
+// AI filter  → locations WITH at least one AI DC (emerging AI hubs)
+// Traditional → locations with ZERO AI DCs (pure traditional markets)
 const cityMatchesFilter = (city, filter) => {
   if (filter === "all") return true;
-  if (filter === "ai") return city.centers.some(isAI);
-  return city.centers.some(dc => !isAI(dc));
+  const hasAI = city.centers.some(isAI);
+  if (filter === "ai") return hasAI;
+  return !hasAI; // traditional = no AI presence
 };
 const stateMatchesFilter = (state, filter) =>
   filter === "all" ? true : state.cities.some(c => cityMatchesFilter(c, filter));
@@ -1191,7 +1193,7 @@ export default function GeoMap() {
           <div className="flex flex-col items-end gap-2">
             {/* Filter toggle */}
             <div className="flex rounded-lg overflow-hidden border border-gray-700 text-xs">
-              {[["all", "All"], ["ai", "AI Only"], ["traditional", "Traditional"]].map(([val, label]) => (
+              {[["all", "All"], ["ai", "AI Hubs"], ["traditional", "No AI"]].map(([val, label]) => (
                 <button
                   key={val}
                   onClick={() => setDcFilter(val)}
