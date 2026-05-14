@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid, AreaChart, Area } from "recharts";
+import GeoMap from "./GeoMap";
 
 const byCountry = [
   { country: "USA 🇺🇸", count: 4184 },
@@ -73,7 +74,7 @@ const statCards = [
   { label: "Water/Day (Large DC)", value: "5M gal", sub: "Cooling only", color: "#3b82f6", icon: "💧" },
 ];
 
-const TABS = ["Overview", "By Country", "By Type", "Power & Growth", "Spending", "Hyperscalers"];
+const TABS = ["Overview", "By Country", "By Type", "Power & Growth", "Spending", "Hyperscalers", "🌍 World Map"];
 
 function CT({ active, payload, label }) {
   if (active && payload && payload.length) {
@@ -331,6 +332,8 @@ export default function App() {
               </div>
             ))}
           </>)}
+
+          {tab === "🌍 World Map" && <GeoMap />}
         </div>
         <div className="text-center text-xs text-gray-600 mt-5">Sources: Statista · ABI Research · Programs.com · CBRE · Dell'Oro · 2026</div>
       </div>
