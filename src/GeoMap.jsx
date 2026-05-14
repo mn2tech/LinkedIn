@@ -39,6 +39,8 @@ const DC_HIERARCHY = {
             { name: "Iron Mountain NVA1", zip: "20166", address: "45901 Nokes Blvd", type: "Colocation", operator: "Iron Mountain", mw: 90 },
             { name: "CyrusOne Sterling I", zip: "20164", address: "21834 Rugby Rd", type: "Colocation", operator: "CyrusOne", mw: 60 },
             { name: "Digital Realty IAD", zip: "20147", address: "44060 Digital Loudoun Plz", type: "Colocation", operator: "Digital Realty", mw: 80 },
+            { name: "CoreWeave VA1", zip: "20166", address: "46880 Lustre Ct, Sterling", type: "AI", operator: "CoreWeave", mw: 200 },
+            { name: "Microsoft AI East", zip: "20147", address: "13600 EDS Dr, Herndon", type: "AI", operator: "Microsoft", mw: 180 },
           ]},
           { name: "Reston", count: 190, lat: 38.9586, lon: -77.357, centers: [
             { name: "Equinix DC2", zip: "20191", address: "12000 Sunrise Valley Dr", type: "Colocation", operator: "Equinix", mw: 45 },
@@ -56,6 +58,9 @@ const DC_HIERARCHY = {
             { name: "Equinix SV1", zip: "95110", address: "11 Great Oaks Blvd", type: "Colocation", operator: "Equinix", mw: 20 },
             { name: "Equinix SV5", zip: "95134", address: "2000 N First St", type: "Colocation", operator: "Equinix", mw: 18 },
             { name: "Digital Realty SJC", zip: "95112", address: "2820 Northwestern Pkwy", type: "Colocation", operator: "Digital Realty", mw: 25 },
+            { name: "CoreWeave SJC1", zip: "95134", address: "1060 N McCarthy Blvd", type: "AI", operator: "CoreWeave", mw: 150 },
+            { name: "Lambda Labs SJC", zip: "95110", address: "303 Almaden Blvd", type: "AI", operator: "Lambda Labs", mw: 40 },
+            { name: "NVIDIA DGX Cloud SV", zip: "95051", address: "2788 San Tomas Expy", type: "AI", operator: "NVIDIA", mw: 60 },
           ]},
           { name: "Los Angeles", count: 180, lat: 34.0522, lon: -118.2437, centers: [
             { name: "CoreSite LA1", zip: "90001", address: "900 N Alameda St", type: "Colocation", operator: "CoreSite", mw: 40 },
@@ -78,6 +83,8 @@ const DC_HIERARCHY = {
             { name: "Equinix DA1", zip: "75247", address: "2323 Bryan St", type: "Colocation", operator: "Equinix", mw: 60 },
             { name: "CyrusOne Dallas", zip: "75207", address: "1649 W Frankford Rd", type: "Colocation", operator: "CyrusOne", mw: 70 },
             { name: "Digital Realty DFW", zip: "75207", address: "900 Hideaway Ln", type: "Hyperscale", operator: "Digital Realty", mw: 100 },
+            { name: "CoreWeave DAL1", zip: "75244", address: "14901 Quorum Dr", type: "AI", operator: "CoreWeave", mw: 120 },
+            { name: "Crusoe AI Dallas", zip: "75201", address: "1900 McKinney Ave", type: "AI", operator: "Crusoe Energy", mw: 50 },
           ]},
           { name: "Austin", count: 150, lat: 30.2672, lon: -97.7431, centers: [
             { name: "Flexential Austin", zip: "78741", address: "5000 Spectrum Dr", type: "Colocation", operator: "Flexential", mw: 20 },
@@ -114,6 +121,7 @@ const DC_HIERARCHY = {
           { name: "Quincy", count: 140, lat: 47.2343, lon: -119.8526, centers: [
             { name: "Microsoft Quincy DC", zip: "98848", address: "1 Microsoft Way", type: "Hyperscale", operator: "Microsoft", mw: 200 },
             { name: "Dell QCY Campus", zip: "98848", address: "400 Silica Dr NW", type: "Hyperscale", operator: "Dell", mw: 150 },
+            { name: "Microsoft OpenAI Training", zip: "98848", address: "2 Microsoft Way", type: "AI", operator: "Microsoft / OpenAI", mw: 300 },
           ]},
         ],
       },
@@ -158,6 +166,8 @@ const DC_HIERARCHY = {
             { name: "Digital Realty LHR", zip: "TW6 2GA", address: "8 Buckingham Ave", type: "Colocation", operator: "Digital Realty", mw: 40 },
             { name: "CyrusOne London", zip: "EC1A 1BB", address: "6 Braham St", type: "Colocation", operator: "CyrusOne", mw: 30 },
             { name: "Telehouse North", zip: "E14 9TN", address: "Coriander Ave, Docklands", type: "Colocation", operator: "Telehouse", mw: 25 },
+            { name: "CoreWeave LDN1", zip: "E14 5AB", address: "25 Canada Square, Canary Wharf", type: "AI", operator: "CoreWeave", mw: 100 },
+            { name: "xAI UK Compute", zip: "N1C 4AG", address: "1 Granary Square, Kings Cross", type: "AI", operator: "xAI", mw: 80 },
           ]},
           { name: "Manchester", count: 80, lat: 53.4808, lon: -2.2426, centers: [
             { name: "Equinix MA1", zip: "M1 1AD", address: "Joule House, Rutherford St", type: "Colocation", operator: "Equinix", mw: 18 },
@@ -200,6 +210,8 @@ const DC_HIERARCHY = {
             { name: "Digital Realty FRA", zip: "60314", address: "Hanauer Landstr 298", type: "Colocation", operator: "Digital Realty", mw: 45 },
             { name: "DE-CIX FRA1", zip: "60596", address: "Gutleutstrasse 310", type: "Colocation", operator: "DE-CIX", mw: 30 },
             { name: "Interxion FRA11", zip: "60314", address: "Hanauer Landstr 151", type: "Colocation", operator: "Interxion", mw: 40 },
+            { name: "CoreWeave FRA1", zip: "60528", address: "Lyoner Str 26", type: "AI", operator: "CoreWeave", mw: 90 },
+            { name: "Aleph Alpha AI DC", zip: "76131", address: "Vincenz-Priessnitz-Str 1", type: "AI", operator: "Aleph Alpha", mw: 40 },
           ]},
         ],
       },
@@ -391,6 +403,7 @@ const DC_HIERARCHY = {
             { name: "Digital Realty AMS", zip: "1102", address: "Gyroscoopweg 2a", type: "Colocation", operator: "Digital Realty", mw: 35 },
             { name: "NTT Amsterdam", zip: "1043", address: "Gyroscoopweg 2e", type: "Colocation", operator: "NTT", mw: 25 },
             { name: "Interxion AMS7", zip: "1115", address: "Cessnalaan 3", type: "Colocation", operator: "Interxion", mw: 30 },
+            { name: "Nebius AI AMS1", zip: "1012", address: "Damrak 70", type: "AI", operator: "Nebius (Yandex)", mw: 70 },
           ]},
         ],
       },
@@ -417,6 +430,8 @@ const DC_HIERARCHY = {
             { name: "Equinix TY1", zip: "135-0063", address: "14-1 Toyosu, Koto-ku", type: "Colocation", operator: "Equinix", mw: 30 },
             { name: "Digital Realty TYO", zip: "100-0005", address: "3-1 Marunouchi, Chiyoda-ku", type: "Colocation", operator: "Digital Realty", mw: 25 },
             { name: "IDC Frontier TYO1", zip: "108-0075", address: "2-3-14 Konan, Minato-ku", type: "Colocation", operator: "IDC Frontier", mw: 20 },
+            { name: "SoftBank AI Campus", zip: "105-7529", address: "1-9-1 Higashi-Shimbashi, Minato-ku", type: "AI", operator: "SoftBank", mw: 100 },
+            { name: "KDDI Musashino AI", zip: "180-0012", address: "1-3 Ohara, Musashino-shi", type: "AI", operator: "KDDI", mw: 60 },
           ]},
         ],
       },
@@ -541,6 +556,8 @@ const DC_HIERARCHY = {
           { name: "Singapore CBD", count: 50, lat: 1.28, lon: 103.8501, centers: [
             { name: "Equinix SG2", zip: "418926", address: "26A Ayer Rajah Crescent", type: "Colocation", operator: "Equinix", mw: 25 },
             { name: "Digital Realty SIN", zip: "627785", address: "29A International Business Park", type: "Colocation", operator: "Digital Realty", mw: 20 },
+            { name: "CoreWeave SG1", zip: "138628", address: "1 Science Park Dr", type: "AI", operator: "CoreWeave", mw: 80 },
+            { name: "Nvidia AI Singapore", zip: "117440", address: "138 Depot Rd", type: "AI", operator: "NVIDIA", mw: 50 },
           ]},
           { name: "Jurong", count: 30, lat: 1.3404, lon: 103.709, centers: [
             { name: "Keppel DC SG2", zip: "639798", address: "63 Science Park Rd", type: "Colocation", operator: "Keppel", mw: 15 },
@@ -574,7 +591,8 @@ const DC_HIERARCHY = {
         name: "Norrbotten", count: 35, lat: 66.8309, lon: 20.3971,
         cities: [
           { name: "Luleå", count: 35, lat: 65.5848, lon: 22.1547, centers: [
-            { name: "Meta Luleå DC1", zip: "971 25", address: "Gruvövägen 1", type: "Hyperscale", operator: "Meta", mw: 120 },
+            { name: "Meta Luleå RSC", zip: "971 25", address: "Gruvövägen 1", type: "AI", operator: "Meta", mw: 120 },
+            { name: "Hydro66 LUL1", zip: "972 54", address: "Norra Hamn 1", type: "AI", operator: "Hydro66", mw: 60 },
           ]},
         ],
       },
@@ -726,7 +744,11 @@ const TYPE_COLOR = {
   Hyperscale: "#f59e0b",
   Government: "#10b981",
   Neocloud: "#ec4899",
+  AI: "#06b6d4",
 };
+
+const AI_TYPES = new Set(["AI"]);
+const isAI = (dc) => AI_TYPES.has(dc.type);
 
 const worldSizeScale = d3.scaleSqrt().domain([60, 4184]).range([5, 34]);
 const stateSizeScale = d3.scaleSqrt().domain([10, 900]).range([6, 22]);
@@ -746,6 +768,7 @@ export default function GeoMap() {
   const [selected, setSelected] = useState({});
   const [cityDCs, setCityDCs] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([{ label: "World", level: "world", selected: {} }]);
+  const [dcFilter, setDcFilter] = useState("all"); // "all" | "ai" | "traditional"
 
   // ── Fetch world TopoJSON ──────────────────────────────────────────────────
   useEffect(() => {
@@ -847,7 +870,7 @@ export default function GeoMap() {
       const state = country?.states.find(s => s.name === selected.state);
       if (!state) return;
       zoomTo(state.lat, state.lon, country.zoom * 4, svg);
-      drawCityPins(markers, state, null);
+      drawCityPins(markers, state, null, dcFilter);
       setCityDCs(null);
     } else if (level === "city") {
       const country = DC_HIERARCHY[selected.country];
@@ -855,10 +878,10 @@ export default function GeoMap() {
       const city = state?.cities.find(c => c.name === selected.city);
       if (!city) return;
       zoomTo(city.lat, city.lon, country.zoom * 12, svg);
-      drawCityPins(markers, state, city.name);
+      drawCityPins(markers, state, city.name, dcFilter);
       setCityDCs(city);
     }
-  }, [level, selected, world]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [level, selected, world, dcFilter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const zoomTo = (lat, lon, scale, svg) => {
     const proj = projRef.current;
@@ -994,7 +1017,7 @@ export default function GeoMap() {
     });
   };
 
-  const drawCityPins = (g, state, highlightCity) => {
+  const drawCityPins = (g, state, highlightCity, filter = "all") => {
     const proj = projRef.current;
 
     state.cities.forEach(city => {
@@ -1028,8 +1051,11 @@ export default function GeoMap() {
 
       // Individual DC pins if city is highlighted
       if (isHighlighted) {
-        city.centers.forEach((dc, i) => {
-          const angle = (i / city.centers.length) * 2 * Math.PI - Math.PI / 2;
+        const visibleCenters = city.centers.filter(dc =>
+          filter === "all" ? true : filter === "ai" ? isAI(dc) : !isAI(dc)
+        );
+        visibleCenters.forEach((dc, i) => {
+          const angle = (i / visibleCenters.length) * 2 * Math.PI - Math.PI / 2;
           const dist = 18;
           const px2 = cx + Math.cos(angle) * dist;
           const py2 = cy + Math.sin(angle) * dist;
@@ -1099,25 +1125,41 @@ export default function GeoMap() {
             </div>
           </div>
 
-          {/* Legend */}
-          <div className="flex gap-3 text-xs text-gray-400 flex-wrap">
-            {level === "world" && (
-              <>
-                <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-indigo-500 opacity-90" /> 1000+</span>
-                <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-indigo-500 opacity-70" /> 100–999</span>
-                <span className="flex items-center gap-1"><span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 opacity-50" /> &lt;100</span>
-              </>
-            )}
-            {(level === "state" || level === "city") && (
-              <>
-                <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-emerald-400" /> City</span>
-                {level === "city" && Object.entries(TYPE_COLOR).map(([t, c]) => (
-                  <span key={t} className="flex items-center gap-1">
-                    <span className="inline-block w-2 h-2 rounded-full" style={{ background: c }} /> {t}
-                  </span>
-                ))}
-              </>
-            )}
+          <div className="flex flex-col items-end gap-2">
+            {/* Filter toggle */}
+            <div className="flex rounded-lg overflow-hidden border border-gray-700 text-xs">
+              {[["all", "All"], ["ai", "AI Only"], ["traditional", "Traditional"]].map(([val, label]) => (
+                <button
+                  key={val}
+                  onClick={() => setDcFilter(val)}
+                  className={`px-2.5 py-1 transition-colors ${dcFilter === val ? "bg-indigo-600 text-white" : "bg-gray-900 text-gray-400 hover:text-gray-200"}`}
+                >
+                  {val === "ai" && <span className="inline-block w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1" />}
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Legend */}
+            <div className="flex gap-3 text-xs text-gray-400 flex-wrap justify-end">
+              {level === "world" && (
+                <>
+                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-indigo-500 opacity-90" /> 1000+</span>
+                  <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-indigo-500 opacity-70" /> 100–999</span>
+                  <span className="flex items-center gap-1"><span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 opacity-50" /> &lt;100</span>
+                </>
+              )}
+              {(level === "state" || level === "city") && (
+                <>
+                  <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-emerald-400" /> City</span>
+                  {level === "city" && Object.entries(TYPE_COLOR).map(([t, c]) => (
+                    <span key={t} className="flex items-center gap-1">
+                      <span className="inline-block w-2 h-2 rounded-full" style={{ background: c }} /> {t}
+                    </span>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1166,11 +1208,33 @@ export default function GeoMap() {
       {/* City-level DC cards */}
       {level === "city" && cityDCs && (
         <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
-          <div className="text-xs text-indigo-400 font-medium mb-3 tracking-wide">
-            {cityDCs.name.toUpperCase()} · {cityDCs.centers.length} FACILITIES
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div className="text-xs text-indigo-400 font-medium tracking-wide">
+              {cityDCs.name.toUpperCase()} · {cityDCs.centers.filter(dc =>
+                dcFilter === "all" ? true : dcFilter === "ai" ? isAI(dc) : !isAI(dc)
+              ).length} FACILITIES
+              {dcFilter !== "all" && (
+                <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-normal"
+                  style={{ background: dcFilter === "ai" ? "#06b6d420" : "#6366f120", color: dcFilter === "ai" ? "#06b6d4" : "#818cf8" }}>
+                  {dcFilter === "ai" ? "AI Only" : "Traditional Only"}
+                </span>
+              )}
+            </div>
+            <div className="flex gap-2 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-cyan-400" />
+                {cityDCs.centers.filter(isAI).length} AI
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-indigo-500" />
+                {cityDCs.centers.filter(dc => !isAI(dc)).length} Traditional
+              </span>
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {cityDCs.centers.map((dc, i) => (
+            {cityDCs.centers.filter(dc =>
+              dcFilter === "all" ? true : dcFilter === "ai" ? isAI(dc) : !isAI(dc)
+            ).map((dc, i) => (
               <div key={i} className="bg-gray-900 border border-gray-700 rounded-lg p-3 hover:border-indigo-600 transition-colors">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="text-sm font-semibold text-white leading-tight">{dc.name}</div>
