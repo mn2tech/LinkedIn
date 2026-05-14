@@ -750,6 +750,20 @@ const TYPE_COLOR = {
 const AI_TYPES = new Set(["AI"]);
 const isAI = (dc) => AI_TYPES.has(dc.type);
 
+// returns true if any DC in the city/state/country matches the filter
+const cityMatchesFilter = (city, filter) => {
+  if (filter === "all") return true;
+  if (filter === "ai") return city.centers.some(isAI);
+  return city.centers.some(dc => !isAI(dc));
+};
+const stateMatchesFilter = (state, filter) =>
+  filter === "all" ? true : state.cities.some(c => cityMatchesFilter(c, filter));
+const countryMatchesFilter = (code, filter) => {
+  if (filter === "all") return true;
+  const c = DC_HIERARCHY[code];
+  return c ? c.states.some(s => stateMatchesFilter(s, filter)) : false;
+};
+
 const worldSizeScale = d3.scaleSqrt().domain([60, 4184]).range([5, 34]);
 const stateSizeScale = d3.scaleSqrt().domain([10, 900]).range([6, 22]);
 const citySizeScale = d3.scaleSqrt().domain([10, 450]).range([5, 16]);
@@ -845,7 +859,28 @@ export default function GeoMap() {
     g.append("g").attr("id", "markers");
   }, [world]);
 
-  // ── Re-render markers whenever level/selected changes ────────────────────
+  // ── Zoom only when level/selected changes (NOT on filter change) ─────────
+  useEffect(() => {
+    if (!world || !svgRef.current || !projRef.current || !zoomRef.current) return;
+    const svg = d3.select(svgRef.current);
+    if (level === "world") {
+      svg.transition().duration(750).call(zoomRef.current.transform, d3.zoomIdentity);
+    } else if (level === "country") {
+      const country = DC_HIERARCHY[selected.country];
+      if (country) zoomTo(country.lat, country.lon, country.zoom, svg);
+    } else if (level === "state") {
+      const country = DC_HIERARCHY[selected.country];
+      const state = country?.states.find(s => s.name === selected.state);
+      if (state) zoomTo(state.lat, state.lon, country.zoom * 4, svg);
+    } else if (level === "city") {
+      const country = DC_HIERARCHY[selected.country];
+      const state = country?.states.find(s => s.name === selected.state);
+      const city = state?.cities.find(c => c.name === selected.city);
+      if (city) zoomTo(city.lat, city.lon, country.zoom * 12, svg);
+    }
+  }, [level, selected, world]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Redraw markers whenever level, selected, or filter changes ───────────
   useEffect(() => {
     if (!world || !svgRef.current || !projRef.current) return;
     const svg = d3.select(svgRef.current);
@@ -854,22 +889,17 @@ export default function GeoMap() {
     setTooltip(null);
 
     if (level === "world") {
-      svg.transition().duration(750).call(
-        zoomRef.current.transform, d3.zoomIdentity
-      );
-      drawWorldBubbles(markers);
+      drawWorldBubbles(markers, dcFilter);
       setCityDCs(null);
     } else if (level === "country") {
       const country = DC_HIERARCHY[selected.country];
       if (!country) return;
-      zoomTo(country.lat, country.lon, country.zoom, svg);
-      drawStateBubbles(markers, country);
+      drawStateBubbles(markers, country, dcFilter);
       setCityDCs(null);
     } else if (level === "state") {
       const country = DC_HIERARCHY[selected.country];
       const state = country?.states.find(s => s.name === selected.state);
       if (!state) return;
-      zoomTo(state.lat, state.lon, country.zoom * 4, svg);
       drawCityPins(markers, state, null, dcFilter);
       setCityDCs(null);
     } else if (level === "city") {
@@ -877,7 +907,6 @@ export default function GeoMap() {
       const state = country?.states.find(s => s.name === selected.state);
       const city = state?.cities.find(c => c.name === selected.city);
       if (!city) return;
-      zoomTo(city.lat, city.lon, country.zoom * 12, svg);
       drawCityPins(markers, state, city.name, dcFilter);
       setCityDCs(city);
     }
@@ -918,20 +947,24 @@ export default function GeoMap() {
   };
 
   // ── Draw helpers ──────────────────────────────────────────────────────────
-  const drawWorldBubbles = (g) => {
+  const drawWorldBubbles = (g, filter = "all") => {
     const proj = projRef.current;
-    const sorted = [...DC_DATA].sort((a, b) => b.count - a.count);
+    const all = [...DC_DATA].sort((a, b) => b.count - a.count);
+    // Dim/hide countries that don't match the filter
+    const visible = all.filter(d => countryMatchesFilter(d.code, filter));
+    const dimmed  = all.filter(d => !countryMatchesFilter(d.code, filter));
 
-    // Pulse rings for top countries
-    sorted.filter(d => d.count > 300).forEach(d => {
+    // Pulse rings for large visible countries
+    visible.filter(d => d.count > 300).forEach(d => {
       const [cx, cy] = proj([d.lon, d.lat]) || [0, 0];
       const r = worldSizeScale(d.count);
+      const strokeColor = filter === "ai" ? "#06b6d4" : "#6366f1";
       const ring = g.append("circle")
         .attr("class", "drill-pulse")
         .attr("cx", cx).attr("cy", cy)
         .attr("r", r + 6).attr("data-r", r)
         .attr("fill", "none")
-        .attr("stroke", "#6366f1").attr("stroke-width", 1.5)
+        .attr("stroke", strokeColor).attr("stroke-width", 1.5)
         .attr("opacity", 0.5);
       const pulse = () => {
         ring.attr("opacity", 0.5).attr("r", r + 6)
@@ -942,55 +975,76 @@ export default function GeoMap() {
       pulse();
     });
 
-    // Bubbles
-    g.selectAll(".world-bubble")
-      .data(sorted)
-      .join("circle")
-      .attr("class", "world-bubble drill-bubble")
-      .attr("cx", d => proj([d.lon, d.lat])?.[0] || 0)
-      .attr("cy", d => proj([d.lon, d.lat])?.[1] || 0)
-      .attr("r", d => worldSizeScale(d.count))
-      .attr("data-r", d => worldSizeScale(d.count))
-      .attr("fill", "#6366f1").attr("fill-opacity", 0.75)
-      .attr("stroke", "#a78bfa").attr("stroke-width", 1)
-      .style("cursor", DC_HIERARCHY[d => d.code] ? "pointer" : "default")
-      .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget).attr("fill-opacity", 1).attr("stroke-width", 2);
-        setTooltip({
-          x: event.offsetX, y: event.offsetY,
-          title: d.country,
-          sub: `${d.count.toLocaleString()} data centers`,
-          hint: DC_HIERARCHY[d.code] ? "Click to explore regions" : null,
+    // Dimmed bubbles (don't match filter)
+    dimmed.forEach(d => {
+      const [cx, cy] = proj([d.lon, d.lat]) || [0, 0];
+      g.append("circle")
+        .attr("class", "world-bubble drill-bubble")
+        .attr("cx", cx).attr("cy", cy)
+        .attr("r", worldSizeScale(d.count))
+        .attr("data-r", worldSizeScale(d.count))
+        .attr("fill", "#334155").attr("fill-opacity", 0.35)
+        .attr("stroke", "#475569").attr("stroke-width", 0.5)
+        .style("cursor", "default");
+    });
+
+    // Active bubbles
+    const bubbleColor = filter === "ai" ? "#06b6d4" : filter === "traditional" ? "#6366f1" : "#6366f1";
+    const strokeColor = filter === "ai" ? "#67e8f9" : "#a78bfa";
+    visible.forEach(d => {
+      const [cx, cy] = proj([d.lon, d.lat]) || [0, 0];
+      g.append("circle")
+        .attr("class", "world-bubble drill-bubble")
+        .attr("cx", cx).attr("cy", cy)
+        .attr("r", worldSizeScale(d.count))
+        .attr("data-r", worldSizeScale(d.count))
+        .attr("fill", bubbleColor).attr("fill-opacity", 0.8)
+        .attr("stroke", strokeColor).attr("stroke-width", 1)
+        .style("cursor", DC_HIERARCHY[d.code] ? "pointer" : "default")
+        .on("mouseover", (event) => {
+          d3.select(event.currentTarget).attr("fill-opacity", 1).attr("stroke-width", 2);
+          setTooltip({
+            x: event.offsetX, y: event.offsetY,
+            title: d.country,
+            sub: `${d.count.toLocaleString()} data centers`,
+            hint: DC_HIERARCHY[d.code] ? "Click to explore regions" : null,
+          });
+        })
+        .on("mousemove", event => setTooltip(t => t ? { ...t, x: event.offsetX, y: event.offsetY } : null))
+        .on("mouseout", event => {
+          d3.select(event.currentTarget).attr("fill-opacity", 0.8).attr("stroke-width", 1);
+          setTooltip(null);
+        })
+        .on("click", () => {
+          if (!DC_HIERARCHY[d.code]) return;
+          drillDown("country", { country: d.code });
         });
-      })
-      .on("mousemove", event => setTooltip(t => t ? { ...t, x: event.offsetX, y: event.offsetY } : null))
-      .on("mouseout", event => {
-        d3.select(event.currentTarget).attr("fill-opacity", 0.75).attr("stroke-width", 1);
-        setTooltip(null);
-      })
-      .on("click", (_, d) => {
-        if (!DC_HIERARCHY[d.code]) return;
-        drillDown("country", { country: d.code });
-      });
+    });
   };
 
-  const drawStateBubbles = (g, country) => {
+  const drawStateBubbles = (g, country, filter = "all") => {
     const proj = projRef.current;
     const maxCount = Math.max(...country.states.map(s => s.count));
     const scale = d3.scaleSqrt().domain([0, maxCount]).range([6, 22]);
 
     country.states.forEach(state => {
+      const matches = stateMatchesFilter(state, filter);
       const [cx, cy] = proj([state.lon, state.lat]) || [0, 0];
       const r = scale(state.count);
+      const fillColor = filter === "ai" ? "#06b6d4" : "#818cf8";
+      const strokeColor = filter === "ai" ? "#67e8f9" : "#c7d2fe";
 
       g.append("circle")
         .attr("class", "drill-bubble")
         .attr("cx", cx).attr("cy", cy)
         .attr("r", r).attr("data-r", r)
-        .attr("fill", "#818cf8").attr("fill-opacity", 0.8)
-        .attr("stroke", "#c7d2fe").attr("stroke-width", 1)
-        .style("cursor", "pointer")
+        .attr("fill", matches ? fillColor : "#334155")
+        .attr("fill-opacity", matches ? 0.85 : 0.3)
+        .attr("stroke", matches ? strokeColor : "#475569")
+        .attr("stroke-width", matches ? 1 : 0.5)
+        .style("cursor", matches ? "pointer" : "default")
         .on("mouseover", (event) => {
+          if (!matches) return;
           d3.select(event.currentTarget).attr("fill-opacity", 1).attr("stroke-width", 2);
           setTooltip({
             x: event.offsetX, y: event.offsetY,
@@ -999,18 +1053,18 @@ export default function GeoMap() {
             hint: "Click to explore cities",
           });
         })
-        .on("mousemove", event => setTooltip(t => t ? { ...t, x: event.offsetX, y: event.offsetY } : null))
+        .on("mousemove", event => { if (matches) setTooltip(t => t ? { ...t, x: event.offsetX, y: event.offsetY } : null); })
         .on("mouseout", event => {
-          d3.select(event.currentTarget).attr("fill-opacity", 0.8).attr("stroke-width", 1);
+          d3.select(event.currentTarget).attr("fill-opacity", matches ? 0.85 : 0.3).attr("stroke-width", matches ? 1 : 0.5);
           setTooltip(null);
         })
-        .on("click", () => drillDown("state", { country: selected.country, state: state.name }));
+        .on("click", () => { if (matches) drillDown("state", { country: selected.country, state: state.name }); });
 
       g.append("text")
         .attr("class", "city-label")
         .attr("x", cx).attr("y", cy - r - 3)
         .attr("text-anchor", "middle")
-        .attr("fill", "#e2e8f0")
+        .attr("fill", matches ? "#e2e8f0" : "#4b5563")
         .attr("font-size", "11px")
         .attr("pointer-events", "none")
         .text(state.name);
@@ -1021,33 +1075,42 @@ export default function GeoMap() {
     const proj = projRef.current;
 
     state.cities.forEach(city => {
+      const matches = cityMatchesFilter(city, filter);
       const [cx, cy] = proj([city.lon, city.lat]) || [0, 0];
       const r = citySizeScale(city.count);
       const isHighlighted = highlightCity === city.name;
-      const color = isHighlighted ? "#f59e0b" : "#34d399";
+      const activeColor = isHighlighted ? "#f59e0b" : (filter === "ai" ? "#06b6d4" : "#34d399");
+      const activeStroke = isHighlighted ? "#fcd34d" : (filter === "ai" ? "#67e8f9" : "#6ee7b7");
 
       g.append("circle")
         .attr("class", "drill-bubble")
         .attr("cx", cx).attr("cy", cy)
         .attr("r", r).attr("data-r", r)
-        .attr("fill", color).attr("fill-opacity", isHighlighted ? 1 : 0.8)
-        .attr("stroke", isHighlighted ? "#fcd34d" : "#6ee7b7").attr("stroke-width", 1.5)
-        .style("cursor", "pointer")
+        .attr("fill", matches ? activeColor : "#334155")
+        .attr("fill-opacity", matches ? (isHighlighted ? 1 : 0.85) : 0.3)
+        .attr("stroke", matches ? activeStroke : "#475569")
+        .attr("stroke-width", matches ? 1.5 : 0.5)
+        .style("cursor", matches ? "pointer" : "default")
         .on("mouseover", (event) => {
+          if (!matches) return;
           d3.select(event.currentTarget).attr("fill-opacity", 1).attr("stroke-width", 2.5);
+          const aiCount = city.centers.filter(isAI).length;
+          const tradCount = city.centers.length - aiCount;
           setTooltip({
             x: event.offsetX, y: event.offsetY,
             title: city.name,
-            sub: `${city.count} data centers`,
+            sub: `${city.centers.length} facilities  ·  ${aiCount} AI  ·  ${tradCount} Traditional`,
             hint: "Click to see individual facilities",
           });
         })
-        .on("mousemove", event => setTooltip(t => t ? { ...t, x: event.offsetX, y: event.offsetY } : null))
+        .on("mousemove", event => { if (matches) setTooltip(t => t ? { ...t, x: event.offsetX, y: event.offsetY } : null); })
         .on("mouseout", event => {
-          d3.select(event.currentTarget).attr("fill-opacity", isHighlighted ? 1 : 0.8).attr("stroke-width", 1.5);
+          d3.select(event.currentTarget)
+            .attr("fill-opacity", matches ? (isHighlighted ? 1 : 0.85) : 0.3)
+            .attr("stroke-width", matches ? 1.5 : 0.5);
           setTooltip(null);
         })
-        .on("click", () => drillDown("city", { country: selected.country, state: state.name, city: city.name }));
+        .on("click", () => { if (matches) drillDown("city", { country: selected.country, state: state.name, city: city.name }); });
 
       // Individual DC pins if city is highlighted
       if (isHighlighted) {
